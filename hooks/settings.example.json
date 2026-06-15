@@ -1,0 +1,28 @@
+{
+  "_comment": "Merge the `hooks` block into your ~/.claude/settings.json. Replace <HOME> with your absolute home path (Claude Code does not expand env vars inside hook commands). On macOS/Linux, point at .sh ports of the scripts and use a bash command instead of powershell.exe.",
+
+  "hooks": {
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"<HOME>\\.claude\\hooks\\session-journal.ps1\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"<HOME>\\.claude\\hooks\\verify-gate.ps1\"",
+            "timeout": 600
+          }
+        ]
+      }
+    ]
+  }
+}

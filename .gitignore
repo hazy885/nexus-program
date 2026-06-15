@@ -1,0 +1,12 @@
+# Local tooling / artifacts
+.DS_Store
+Thumbs.db
+*.log
+.claude/journal.enabled
+.claude/verify.cmd
+
+# Never commit secrets
+.env
+.env.*
+*.pem
+*.key
