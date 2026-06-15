@@ -32,7 +32,7 @@ This repo is the configuration that closes that gap. None of it is magic — it'
 |---|---|---|
 | **1. The Operating Loop** | A skill that makes the agent run Understand → Plan → Build → Verify → Reflect on every task, with a capability self-check and scope discipline | `skills/dev-core/` |
 | **2. The Brain** | Persistent memory — a human-readable notes vault + a semantic index — captured automatically so nothing is lost between sessions | `skills/brain-capture/` + `hooks/session-journal.{ps1,sh}` |
-| **3. Independent Agents** | Fresh-context subagents that give a verdict the author can't: `senior-review` tries to *refute* the work before it ships; `fact-check` verifies claims/versions/CVEs/docs against authoritative sources (only cited, evidence-graded feedback); `circuit-breaker` halts work that's going nowhere or adding no value; `prompt-coach` reviews a slow session and teaches *you* the prompt that would have solved it first try | `agents/{senior-review,fact-check,circuit-breaker,prompt-coach}.md` |
+| **3. Independent Agents** | Fresh-context subagents that give a verdict the author can't: `senior-review` *refutes* the work before it ships; `security-review` hunts vulnerabilities threat-led (OWASP + STRIDE); `fact-check` verifies claims/versions/CVEs against authoritative sources; `circuit-breaker` halts dead-end / no-value work; `prompt-coach` teaches *you* the prompt that would've solved it first try | `agents/{senior-review,security-review,fact-check,circuit-breaker,prompt-coach}.md` |
 | **4. Hard Verification & Guards** | Deterministic hooks that always run: `verify-gate` blocks "done" while tests fail; `guard` blocks catastrophic commands (`rm -rf /`, force-push, `git add -A`), pipe-to-shell, and writing secrets to files — *before* they happen | `hooks/{verify-gate,guard}.{ps1,sh}` |
 | **5. The Commands** | Explicit, repeatable workflows: `/plan`, `/ship`, `/debug`, `/refactor`, `/audit`, `/research`, `/optimize`, `/ideate` — each encoding a research-backed method | `skills/{plan,ship,debug,refactor,audit,research,optimize,ideate}/` |
 
@@ -66,6 +66,7 @@ The process playbooks at the heart of the upgrade — read these to see *exactly
 - **[How it approaches code](docs/playbooks/approaching-code.md)** — the 10-step loop: understand → research → read → isolate → explain → plan → build → verify → review → teach.
 - **[How it stays in scope](docs/playbooks/staying-in-scope.md)** — the smallest change that solves it; note-don't-fix unrelated issues, no "while I'm here" creep.
 - **[How it tests](docs/playbooks/testing.md)** — reproduce-first, assert real values, mutation-resistant, the test pyramid, and the verify-gate that won't let a turn end red.
+- **[How it handles security](docs/playbooks/security.md)** — secure by default: hostile input at trust boundaries, authorize every access, parameterized queries, no homegrown crypto, least privilege, fail closed.
 - **[How it audits](docs/playbooks/auditing.md)** — the method, checklist, severity rubric, pace discipline, and the AI guardrail against hallucinated vulns.
 - **[How it researches](docs/playbooks/researching.md)** — search-first, cite-what-you-used, verify-don't-relay, and the no-hallucination rule.
 
@@ -130,6 +131,7 @@ senior-claude/
 │   └── ideate/                    # /ideate — evidence-based idea generation
 ├── agents/
 │   ├── senior-review.md           # fresh-context adversarial reviewer
+│   ├── security-review.md         # threat-led vulnerability hunt (OWASP + STRIDE), verified findings
 │   ├── fact-check.md              # fresh-context researcher — verifies claims, only cited facts
 │   ├── circuit-breaker.md         # stop-the-line — kills dead-end / no-value work, redirects
 │   └── prompt-coach.md            # retro teacher — how you could've prompted it first try
@@ -157,6 +159,7 @@ senior-claude/
         ├── approaching-code.md     # the 10-step coding loop
         ├── staying-in-scope.md     # scope discipline — only change what's needed
         ├── testing.md              # the testing discipline
+        ├── security.md             # secure-by-default coding (OWASP, least privilege, fail closed)
         ├── auditing.md             # the audit playbook
         └── researching.md          # the research discipline
 ```

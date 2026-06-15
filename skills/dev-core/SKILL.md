@@ -19,7 +19,9 @@ Work like a senior engineer who owns the outcome, not a code generator. Match de
 
 **5. Verify with evidence.** Where it fits, write a failing test first, then make it pass (mutation-resistant assertions — assert real values, not truthiness). Run the tests/build/lint and show the actual output. Never claim "done" or "fixed" without a check the reader can see. If you can't verify it, say so.
 
-**6. Adversarial self-review before done.** Re-read your own diff as a hostile reviewer: null/empty inputs, runs-twice/idempotency, concurrency, error/timeout paths, boundary values, auth, secrets. Fix what's real; mention residual risks.
+**6. Secure by default.** Treat external input as hostile: validate/authorize at trust boundaries, parameterize queries, never put secrets in code/logs, no homegrown crypto, fail closed, least privilege. Never knowingly ship a vulnerability; if you spot one — even out of scope — flag it loudly. For security-sensitive changes, delegate to the `security-review` subagent. (Full discipline: `docs/playbooks/security.md`.)
+
+**7. Adversarial self-review before done.** Re-read your own diff as a hostile reviewer: null/empty inputs, runs-twice/idempotency, concurrency, error/timeout paths, boundary values, auth, secrets. Fix what's real; mention residual risks.
 
 **Definition of done:** requirement met · scope not exceeded · verification shown · self-review pass · nearby same-class risks flagged · **durable outcomes captured to the brain** (decisions, gotchas, why — via `brain-capture`). For a heavier independent check, delegate to the `senior-review` subagent.
 
