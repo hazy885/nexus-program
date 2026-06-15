@@ -1,4 +1,4 @@
-# 08 — The full toolkit (everything that makes it work)
+# The full toolkit (everything that makes it work)
 
 This repo is the **core discipline**. But the setup that turns Claude into a senior engineer also leans on an ecosystem of external skills, agents, MCP servers, and tools. This is the complete, linked inventory — what each thing is, and why it earns its place.
 
@@ -11,8 +11,8 @@ This repo is the **core discipline**. But the setup that turns Claude into a sen
 - `skills/dev-core` — the always-on senior operating loop.
 - `skills/engineering-fundamentals` — complexity/simplicity/tradeoffs reference.
 - `skills/brain-capture` — dual-store memory discipline.
-- `skills/{plan,ship,audit,ideate}` — the workflow commands.
-- `agents/senior-review` — the adversarial reviewer.
+- `skills/{plan,ship,debug,refactor,audit,research,optimize,ideate}` — the workflow commands.
+- `agents/{senior-review,fact-check,circuit-breaker,prompt-coach}` — the independent passes: adversarial review, evidence verification, stop-the-line, and prompt coaching.
 - `hooks/{verify-gate,session-journal}` — the deterministic test gate + auto-journal.
 
 ---
@@ -38,11 +38,12 @@ When one agent isn't enough — fan out, run adversarial panels, or coordinate a
 
 ## 4. The brain (persistent memory)
 
-See `03-the-brain.md` for the full design. The pieces:
+See `the-brain.md` for the full design. The pieces:
 
 - **A notes vault** — any markdown directory ([Obsidian](https://obsidian.md) works great). Human-readable source of truth.
-- **A semantic index** — a local "brain" that recalls by meaning. Options: a local vector store, an embeddings DB, or **[RyanCodrai/turbovec](https://github.com/RyanCodrai/turbovec)** (fast local vector search, no hosted DB) for the index half.
-- **[safishamsi/graphify](https://github.com/safishamsi/graphify)** — the *code* knowledge-graph half (structure & relationships), complementing the *notes* half.
+- **[garrytan/gbrain](https://github.com/garrytan/gbrain)** — the semantic-memory layer that makes the vault *recallable by meaning*, and the index half this setup actually runs. Local-first: a markdown "brain repo" synced into embedded Postgres 17 (PGLite/WASM) + pgvector, with hybrid search (vector + BM25 keyword + Reciprocal Rank Fusion + a reranker) and typed links auto-inferred between notes with no LLM calls. **No server, no hosted DB, and effectively zero token cost** — it's a local MCP you *query on demand* instead of stuffing notes into context. One-command wiring: `gbrain init --pglite`, then `claude mcp add gbrain -- gbrain serve`.
+- **[safishamsi/graphify](https://github.com/safishamsi/graphify)** — the *code* knowledge-graph half (structure & relationships), complementing gbrain's *notes* half.
+- **[RyanCodrai/turbovec](https://github.com/RyanCodrai/turbovec)** — a lighter alternative for just the vector half (fast local vector search, no hosted DB) if you don't want the full gbrain stack.
 
 The `brain-capture` skill + `session-journal` hook keep both stores written automatically.
 
@@ -58,7 +59,7 @@ The `brain-capture` skill + `session-journal` hook keep both stores written auto
 - **Productivity MCPs** — Gmail, Google Calendar, Google Drive, ClickUp, scheduled tasks — let the agent act in the tools you already use.
 - **Browse more:** the [MCP server registry](https://github.com/modelcontextprotocol/servers).
 
-> Principle: **CLI tools for breadth, MCP for structured depth.** The agent already knows `gh`, `aws`, `gcloud`; an MCP earns its place when you need a typed integration.
+> Principle: **CLI tools for breadth, MCP for structured depth — and CLIs are the cheaper-token path.** A CLI (`gh`, `aws`, `gcloud`, `gws`) is invoked as a shell command and costs almost nothing in context. An MCP loads *all* its tool schemas into the window every session, so a big toolset is a standing token tax. Prefer the CLI when both exist; reach for an MCP only when you need a typed, structured integration (like the Supabase or gbrain MCPs above).
 
 ---
 
@@ -66,7 +67,7 @@ The `brain-capture` skill + `session-journal` hook keep both stores written auto
 
 | Repo | What it adds |
 |---|---|
-| [googleworkspace/cli](https://github.com/googleworkspace/cli) (`gws`) | One CLI for all Google Workspace APIs. |
+| [googleworkspace/cli](https://github.com/googleworkspace/cli) (`gws`) | One CLI for all Google Workspace APIs (Gmail, Calendar, Drive, Docs…). The agent calls it like any shell command, so it **costs almost no context tokens** — unlike a Google MCP, whose tool schemas all load into the window every session. The low-token way to give the agent Google. |
 | [louislva/claude-peers-mcp](https://github.com/louislva/claude-peers-mcp) | Multiple Claude Code instances message each other. |
 | [HKUDS/CLI-Anything](https://github.com/HKUDS/CLI-Anything) | Auto-generate agent-native CLIs for any app. |
 | [HKUDS/OpenSpace](https://github.com/HKUDS/OpenSpace) | Self-evolving agent skills. |
@@ -96,7 +97,7 @@ Claude Code plugins install a whole bundle from a marketplace in one command (`/
         │                                                                          │
    brain-capture + session-journal ──▶ vault + semantic index (total recall)      │
         │                                                                          │
-   ruflo agents · graphify · MCP servers · capability CLIs (reach & scale)         │
+   ruflo agents · gbrain · graphify · MCP servers · capability CLIs (reach & scale) │
         └──────────────────────────────────────────────────────────────────────────┘
 ```
 

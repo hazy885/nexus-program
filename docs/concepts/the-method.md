@@ -1,4 +1,4 @@
-# 07 — The method (with sources)
+# The method (with sources)
 
 The skills aren't vibes — each encodes an established method. This is the backing, condensed.
 

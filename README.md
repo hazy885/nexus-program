@@ -1,10 +1,10 @@
 <div align="center">
 
-# Senior Claude
+# The Nexus Program
 
 ### Turning Claude Code from a junior dev into a senior engineer.
 
-*A real, copy-pasteable setup: skills, persistent memory, adversarial review, and hard verification gates — so the agent plans, checks its own work, and remembers.*
+*A real, copy-pasteable setup — skills, persistent memory, independent review agents, and hard verification gates — that makes the agent plan, check its own work, push back, and remember.*
 
 </div>
 
@@ -31,14 +31,14 @@ This repo is the configuration that closes that gap. None of it is magic — it'
 | Pillar | What it does | Lives in |
 |---|---|---|
 | **1. The Operating Loop** | A skill that makes the agent run Understand → Plan → Build → Verify → Reflect on every task, with a capability self-check and scope discipline | `skills/dev-core/` |
-| **2. The Brain** | Persistent memory — a human-readable notes vault + a semantic index — captured automatically so nothing is lost between sessions | `skills/brain-capture/` + `hooks/session-journal.ps1` |
-| **3. Adversarial Review** | A fresh-context subagent that tries to *refute* the work before it ships — catches the bugs the author can't see | `agents/senior-review.md` |
-| **4. Hard Verification** | A Stop hook that blocks the agent from declaring "done" while tests fail | `hooks/verify-gate.ps1` |
-| **5. The Commands** | Explicit, repeatable workflows: `/plan`, `/ship`, `/audit`, `/ideate` — each encoding a research-backed method | `skills/{plan,ship,audit,ideate}/` |
+| **2. The Brain** | Persistent memory — a human-readable notes vault + a semantic index — captured automatically so nothing is lost between sessions | `skills/brain-capture/` + `hooks/session-journal.{ps1,sh}` |
+| **3. Independent Agents** | Fresh-context subagents that give a verdict the author can't: `senior-review` tries to *refute* the work before it ships; `fact-check` verifies claims/versions/CVEs/docs against authoritative sources (only cited, evidence-graded feedback); `circuit-breaker` halts work that's going nowhere or adding no value; `prompt-coach` reviews a slow session and teaches *you* the prompt that would have solved it first try | `agents/{senior-review,fact-check,circuit-breaker,prompt-coach}.md` |
+| **4. Hard Verification** | A Stop hook that blocks the agent from declaring "done" while tests fail | `hooks/verify-gate.{ps1,sh}` |
+| **5. The Commands** | Explicit, repeatable workflows: `/plan`, `/ship`, `/debug`, `/refactor`, `/audit`, `/research`, `/optimize`, `/ideate` — each encoding a research-backed method | `skills/{plan,ship,debug,refactor,audit,research,optimize,ideate}/` |
 
 Plus a reference skill of **engineering fundamentals** (`skills/engineering-fundamentals/`) the model consults while planning and reviewing.
 
-> **Want the whole toolkit?** The complete, linked inventory of *everything* that makes this setup work — the agent fleets (ruflo/claude-flow), skill ecosystems (anthropics/skills, graphify), MCP servers, the brain, and every external repo — is in **[`docs/08-the-full-toolkit.md`](docs/08-the-full-toolkit.md)**.
+> **Want the whole toolkit?** The complete, linked inventory of *everything* that makes this setup work — the agent fleets (ruflo/claude-flow), skill ecosystems (anthropics/skills, graphify), MCP servers, the brain, and every external repo — is in **[`docs/concepts/the-full-toolkit.md`](docs/concepts/the-full-toolkit.md)**.
 
 ---
 
@@ -54,23 +54,40 @@ Before → after, on the exact same model:
 
 ---
 
+## How it thinks
+
+The process playbooks at the heart of the upgrade — read these to see *exactly* how the agent behaves:
+
+- **[How it approaches a task or project](docs/playbooks/approaching-a-task.md)** — intake the real goal, size it, decompose into bounded pieces, sequence by risk (scariest first), single-thread, hold state in the plan + brain, close with a verified report.
+- **[How it solves problems](docs/playbooks/solving-problems.md)** — Pólya's understand→plan→do→look-back, debugging as hypothesis-testing (change one thing), root-cause over symptom, stop-and-ask on load-bearing unknowns.
+- **[How it handles uncertainty](docs/playbooks/handling-uncertainty.md)** — notice you're unsure, classify it, resolve facts yourself (read→research→spike→ask), back the *route* with evidence too, never dress a guess as fact.
+- **[How it reasons toward a solution](docs/playbooks/reasoning-about-solutions.md)** — generate real alternatives, set criteria first, try to *falsify* the choice, grade the evidence (ran-it > read-it > docs > precedent > reasoning > intuition), match evidence to reversibility.
+- **[How it pushes back](docs/playbooks/honest-pushback.md)** — truth over agreement: no yes-man. Disagrees with evidence + a better option, challenges the premise, delivers bad news early, and disagrees-and-commits once you decide.
+- **[How it approaches code](docs/playbooks/approaching-code.md)** — the 10-step loop: understand → research → read → isolate → explain → plan → build → verify → review → teach.
+- **[How it stays in scope](docs/playbooks/staying-in-scope.md)** — the smallest change that solves it; note-don't-fix unrelated issues, no "while I'm here" creep.
+- **[How it tests](docs/playbooks/testing.md)** — reproduce-first, assert real values, mutation-resistant, the test pyramid, and the verify-gate that won't let a turn end red.
+- **[How it audits](docs/playbooks/auditing.md)** — the method, checklist, severity rubric, pace discipline, and the AI guardrail against hallucinated vulns.
+- **[How it researches](docs/playbooks/researching.md)** — search-first, cite-what-you-used, verify-don't-relay, and the no-hallucination rule.
+
 ## Quick start
 
-> Requires [Claude Code](https://docs.claude.com/en/docs/claude-code). The hook scripts here are PowerShell (Windows); the `.sh` equivalents are noted inline.
+> Requires [Claude Code](https://docs.claude.com/en/docs/claude-code). Hooks ship in **both** PowerShell (`.ps1`) and bash (`.sh`).
 
-1. **Skills** — copy the folders you want into your skills dir:
-   ```
-   cp -r skills/*           ~/.claude/skills/
-   cp    agents/senior-review.md  ~/.claude/agents/
-   ```
-2. **Hooks** — copy the scripts and merge `hooks/settings.example.json` into `~/.claude/settings.json`:
-   ```
-   cp hooks/*.ps1 ~/.claude/hooks/
-   ```
-3. **The brain (optional but recommended)** — point `brain-capture` at your notes vault and a semantic index. See `docs/03-the-brain.md`.
-4. **Per-project test gate (optional)** — drop a one-line `.claude/verify.cmd` in a repo (e.g. `npm test`) to turn on the hard gate there. See `docs/05-hooks.md`.
+**One command** — copies the skills, all four agents, and the hook scripts into `~/.claude`:
 
-Then just work. The Operating Loop and brain capture apply automatically; `/plan`, `/ship`, `/audit`, `/ideate` are there when you want them.
+```bash
+./install.sh        # macOS / Linux
+```
+```powershell
+.\install.ps1       # Windows
+```
+
+Then (all optional):
+1. **Hooks** — merge `hooks/settings.example.json` into `~/.claude/settings.json` (replace `<HOME>`). See [`docs/concepts/hooks.md`](docs/concepts/hooks.md).
+2. **The brain** — point `brain-capture` at your notes vault + a semantic index. See [`docs/concepts/the-brain.md`](docs/concepts/the-brain.md).
+3. **Per-repo test gate** — drop a one-line `.claude/verify.cmd` (e.g. `npm test`) in a project. See [`docs/concepts/hooks.md`](docs/concepts/hooks.md).
+
+Then just work. The Operating Loop and brain capture apply automatically; `/plan`, `/ship`, `/debug`, `/refactor`, `/audit`, `/research`, `/optimize`, `/ideate` are there when you want them.
 
 ---
 
@@ -78,8 +95,8 @@ Then just work. The Operating Loop and brain capture apply automatically; `/plan
 
 This isn't vibes — each piece is grounded in established practice. The full write-ups (with sources) are in `docs/`:
 
-- **`docs/01-philosophy.md`** — context engineering & the "smallest high-signal token set" idea.
-- **`docs/07-the-method.md`** — the engineering loop (Pólya), simple-vs-easy (Hickey), complexity management (Ousterhout), decision reversibility (one-way/two-way doors), and the audit method (OWASP + the SmartBear/Cisco pace research).
+- **`docs/concepts/philosophy.md`** — context engineering & the "smallest high-signal token set" idea.
+- **`docs/concepts/the-method.md`** — the engineering loop (Pólya), simple-vs-easy (Hickey), complexity management (Ousterhout), decision reversibility (one-way/two-way doors), and the audit method (OWASP + the SmartBear/Cisco pace research).
 
 ---
 
@@ -97,34 +114,55 @@ This isn't vibes — each piece is grounded in established practice. The full wr
 senior-claude/
 ├── README.md
 ├── LICENSE
+├── install.sh                     # one-command install (macOS / Linux)
+├── install.ps1                    # one-command install (Windows)
 ├── skills/
 │   ├── dev-core/                  # the senior operating loop (always-on)
 │   ├── engineering-fundamentals/  # complexity, simple≠easy, principles-as-tensions
 │   ├── brain-capture/             # dual-store memory discipline
 │   ├── plan/                      # /plan — explore + write a plan, no code
 │   ├── ship/                      # /ship — implement + verify + self-review
+│   ├── debug/                     # /debug — scientific debugging (reproduce → hypothesize → test one thing)
+│   ├── refactor/                  # /refactor — behavior-preserving, test-backed, small steps
 │   ├── audit/                     # /audit — method + checklist + severity rubric
+│   ├── research/                  # /research — evidence over memory, cite what each source confirmed
+│   ├── optimize/                  # /optimize — measure → change one thing → re-measure, keep wins
 │   └── ideate/                    # /ideate — evidence-based idea generation
 ├── agents/
-│   └── senior-review.md           # fresh-context adversarial reviewer
+│   ├── senior-review.md           # fresh-context adversarial reviewer
+│   ├── fact-check.md              # fresh-context researcher — verifies claims, only cited facts
+│   ├── circuit-breaker.md         # stop-the-line — kills dead-end / no-value work, redirects
+│   └── prompt-coach.md            # retro teacher — how you could've prompted it first try
 ├── hooks/
-│   ├── session-journal.ps1        # auto work-journal at session end
-│   ├── verify-gate.ps1            # block "done" until tests pass (opt-in per repo)
+│   ├── session-journal.ps1 / .sh  # auto work-journal at session end
+│   ├── verify-gate.ps1 / .sh      # block "done" until tests pass (opt-in per repo)
 │   └── settings.example.json      # how to wire the hooks
 └── docs/
-    ├── 01-philosophy.md
-    ├── 02-skills-vs-subagents-vs-hooks.md
-    ├── 03-the-brain.md
-    ├── 05-hooks.md
-    ├── 06-tools-and-mcps.md
-    ├── 07-the-method.md
-    └── 08-the-full-toolkit.md      # complete linked inventory: agents, skills, MCPs, repos
+    ├── concepts/                   # how it's built
+    │   ├── philosophy.md           # context engineering, smallest high-signal token set
+    │   ├── skills-vs-subagents-vs-hooks.md
+    │   ├── the-brain.md            # persistent memory: vault + semantic index
+    │   ├── hooks.md                # how the deterministic gates are wired
+    │   ├── tools-and-mcps.md
+    │   ├── the-method.md           # the research behind the loop (Pólya, Hickey, Ousterhout…)
+    │   └── the-full-toolkit.md     # complete linked inventory: agents, skills, MCPs, repos
+    └── playbooks/                  # how it thinks (read top-down)
+        ├── approaching-a-task.md   # task/project altitude — intake, decompose, sequence, track
+        ├── solving-problems.md     # the problem-solving method (Pólya + scientific debugging)
+        ├── handling-uncertainty.md # what it does when unsure — resolve, don't guess
+        ├── reasoning-about-solutions.md  # evaluating a solution — falsify it, grade the evidence
+        ├── honest-pushback.md      # truth over agreement — the realist, not a yes-man
+        ├── approaching-code.md     # the 10-step coding loop
+        ├── staying-in-scope.md     # scope discipline — only change what's needed
+        ├── testing.md              # the testing discipline
+        ├── auditing.md             # the audit playbook
+        └── researching.md          # the research discipline
 ```
 
 ---
 
 <div align="center">
 
-Built by [Luka Mladjenović](https://github.com/) while shipping a real product. MIT licensed — take what's useful.
+**The Nexus Program** — built by [Luka Mladjenović](https://github.com/hazy885) while shipping a real product. MIT licensed — take what's useful.
 
 </div>

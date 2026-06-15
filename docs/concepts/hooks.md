@@ -1,4 +1,4 @@
-# 05 — Hooks (the deterministic layer)
+# Hooks (the deterministic layer)
 
 Skills and CLAUDE.md are advisory — the model follows them most of the time. Hooks are **guaranteed**: Claude Code runs them on an event, no matter what the model decides. Use them for the few things that must always happen.
 
@@ -21,13 +21,18 @@ At session end, spawns a detached headless `claude -p` run that reads the sessio
 - **Behaviour:** runs in the background (never delays your exit), scoped tools only, recursion-guarded via an env var so the journaling run doesn't trigger itself.
 - **Cost:** it spawns a short headless run per session. Logs to `%TEMP%\sc-journal-<id>.txt.log`.
 
-## Wiring
+## Install & wiring
 
-Merge `hooks/settings.example.json` into `~/.claude/settings.json` and replace `<HOME>` with your absolute home path (Claude Code does not expand env vars inside hook commands).
+Run `install.ps1` (Windows) or `install.sh` (macOS/Linux) to copy the skills, agents, and **both** hook variants into `~/.claude`. Then merge `hooks/settings.example.json` into `~/.claude/settings.json` and replace `<HOME>` with your absolute home path (Claude Code does not expand env vars inside hook commands).
 
-## macOS / Linux
+## Both shells ship
 
-The scripts are PowerShell. To port: translate to bash (`#!/usr/bin/env bash`), read the hook JSON from stdin, gate on the same marker files, and use `claude -p ... &` for the detached journal run. The logic is identical; only the shell differs.
+Each hook comes in two forms — point `settings.json` at the one for your OS:
+
+- **Windows:** `verify-gate.ps1` · `session-journal.ps1`
+- **macOS / Linux:** `verify-gate.sh` · `session-journal.sh`
+
+The logic is identical (read the hook JSON from stdin, gate on the same `.claude/verify.cmd` / `.claude/journal.enabled` markers, detach the journal run); only the shell differs. The bash journal logs to `$TMPDIR/sc-journal-<id>.log`, the PowerShell one to `%TEMP%\sc-journal-<id>.txt.log`.
 
 ## Safety notes
 

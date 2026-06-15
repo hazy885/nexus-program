@@ -1,4 +1,4 @@
-# 02 — Skills vs subagents vs hooks (when to use which)
+# Skills vs subagents vs hooks (when to use which)
 
 Four mechanisms, each for a different job. Picking the wrong one is why setups feel noisy.
 
@@ -19,6 +19,6 @@ Four mechanisms, each for a different job. Picking the wrong one is why setups f
 ## In this repo
 
 - `dev-core` → CLAUDE.md-style always-on (the operating loop).
-- `engineering-fundamentals`, `/plan`, `/ship`, `/audit`, `/ideate`, `brain-capture` → on-demand skills.
-- `senior-review` → subagent (the independent pass).
+- `engineering-fundamentals`, `/plan`, `/ship`, `/debug`, `/refactor`, `/audit`, `/research`, `/optimize`, `/ideate`, `brain-capture` → on-demand skills.
+- `senior-review`, `fact-check`, `circuit-breaker`, `prompt-coach` → subagents (the independent passes: adversarial review + evidence verification + stop-the-line on dead-end/no-value work + a retro coach that teaches the human better prompting).
 - `verify-gate`, `session-journal` → hooks (the deterministic test gate + auto-journal).

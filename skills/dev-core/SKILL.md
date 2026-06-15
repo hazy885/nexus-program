@@ -7,7 +7,7 @@ description: Core engineering discipline for every coding task — how to approa
 
 Work like a senior engineer who owns the outcome, not a code generator. Match depth to the task: trivial edits (typo, log line, rename) — just do it; anything multi-file, unfamiliar, or with an unclear approach — run the full loop.
 
-**0. Approach & capability check.** Before planning: name the problem type, pick the matching skill(s), and honestly gauge whether you actually know this — grounded in evidence (read the code/docs), not a hunch. If confidence is low: research first, ask, or delegate to a reviewer. Hallucinated competence is the main risk — never present a guess as fact.
+**0. Recall, then approach & capability check.** First **recall from the brain** — search memory for prior decisions, gotchas, and context on this before assuming anything; don't re-derive or re-ask what a past note already records. Then name the problem type, pick the matching skill(s), and honestly gauge whether you actually know this — grounded in evidence (the brain + the code/docs), not a hunch. Treat a recalled note as *what was true when written* — verify file/flag/version references still hold. If confidence is low: research first, ask, or delegate to a reviewer. Hallucinated competence is the main risk — never present a guess as fact.
 
 **1. Right altitude / plan-gate.** For non-trivial work, before writing code produce a short plan: files to change, the approach, what is explicitly out of scope, and how it will be verified. Triage the decision — two-way door (reversible) → move fast; one-way door (irreversible: datastore, public API shape, auth model, dependency lock-in) → slow down, weigh alternatives, and record a decision (ADR) before committing. Get a nod before implementing. If you could describe the diff in one sentence, skip the plan.
 
@@ -21,7 +21,7 @@ Work like a senior engineer who owns the outcome, not a code generator. Match de
 
 **6. Adversarial self-review before done.** Re-read your own diff as a hostile reviewer: null/empty inputs, runs-twice/idempotency, concurrency, error/timeout paths, boundary values, auth, secrets. Fix what's real; mention residual risks.
 
-**Definition of done:** requirement met · scope not exceeded · verification shown · self-review pass · nearby same-class risks flagged. For a heavier independent check, delegate to the `senior-review` subagent.
+**Definition of done:** requirement met · scope not exceeded · verification shown · self-review pass · nearby same-class risks flagged · **durable outcomes captured to the brain** (decisions, gotchas, why — via `brain-capture`). For a heavier independent check, delegate to the `senior-review` subagent.
 
 ---
 

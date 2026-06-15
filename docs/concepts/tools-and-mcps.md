@@ -1,11 +1,11 @@
-# 06 — Tools & MCPs
+# Tools & MCPs
 
 Skills change *how* the agent thinks; tools and MCP servers change *what it can reach*. The principle: **CLI tools are the most context-efficient way to touch the outside world** — the agent already knows how to drive `gh`, `aws`, `gcloud`, etc., and they return compact output. Reach for an MCP server when you need a structured integration (a database, a design tool, a browser).
 
 ## MCP servers worth wiring
 
 - **A database MCP** (e.g. Supabase) — let the agent inspect schema, run read queries, and apply migrations against a *dev* project. Pair it with security advisors so it can audit RLS/policies directly.
-- **A memory/brain MCP** — a local semantic index the agent writes notes to and recalls from (see `03-the-brain.md`). This is what makes knowledge persist.
+- **A memory/brain MCP** — a local semantic index the agent writes notes to and recalls from (see `the-brain.md`). This is what makes knowledge persist.
 - **A browser MCP** — drive a real browser for UI verification and scraping instead of guessing.
 - **Figma / design MCP** — turn designs into code and back.
 

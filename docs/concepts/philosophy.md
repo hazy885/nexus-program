@@ -1,4 +1,4 @@
-# 01 — Philosophy: context engineering
+# Philosophy: context engineering
 
 The whole setup rests on one idea: **the scarce resource is the model's attention, not its intelligence.**
 
