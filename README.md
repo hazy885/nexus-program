@@ -36,7 +36,9 @@ This repo is the configuration that closes that gap. None of it is magic — it'
 | **4. Hard Verification** | A Stop hook that blocks the agent from declaring "done" while tests fail | `hooks/verify-gate.ps1` |
 | **5. The Commands** | Explicit, repeatable workflows: `/plan`, `/ship`, `/audit`, `/ideate` — each encoding a research-backed method | `skills/{plan,ship,audit,ideate}/` |
 
-Plus a reference skill of **engineering fundamentals** (`skills/engineering-fundamentals/`) the model consults while planning and reviewing, and a curated set of **tools/MCPs** that extend what the agent can reach (`docs/06-tools-and-mcps.md`).
+Plus a reference skill of **engineering fundamentals** (`skills/engineering-fundamentals/`) the model consults while planning and reviewing.
+
+> **Want the whole toolkit?** The complete, linked inventory of *everything* that makes this setup work — the agent fleets (ruflo/claude-flow), skill ecosystems (anthropics/skills, graphify), MCP servers, the brain, and every external repo — is in **[`docs/08-the-full-toolkit.md`](docs/08-the-full-toolkit.md)**.
 
 ---
 
@@ -115,7 +117,8 @@ senior-claude/
     ├── 03-the-brain.md
     ├── 05-hooks.md
     ├── 06-tools-and-mcps.md
-    └── 07-the-method.md
+    ├── 07-the-method.md
+    └── 08-the-full-toolkit.md      # complete linked inventory: agents, skills, MCPs, repos
 ```
 
 ---
