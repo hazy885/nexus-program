@@ -33,7 +33,7 @@ This repo is the configuration that closes that gap. None of it is magic — it'
 | **1. The Operating Loop** | A skill that makes the agent run Understand → Plan → Build → Verify → Reflect on every task, with a capability self-check and scope discipline | `skills/dev-core/` |
 | **2. The Brain** | Persistent memory — a human-readable notes vault + a semantic index — captured automatically so nothing is lost between sessions | `skills/brain-capture/` + `hooks/session-journal.{ps1,sh}` |
 | **3. Independent Agents** | Fresh-context subagents that give a verdict the author can't: `senior-review` tries to *refute* the work before it ships; `fact-check` verifies claims/versions/CVEs/docs against authoritative sources (only cited, evidence-graded feedback); `circuit-breaker` halts work that's going nowhere or adding no value; `prompt-coach` reviews a slow session and teaches *you* the prompt that would have solved it first try | `agents/{senior-review,fact-check,circuit-breaker,prompt-coach}.md` |
-| **4. Hard Verification** | A Stop hook that blocks the agent from declaring "done" while tests fail | `hooks/verify-gate.{ps1,sh}` |
+| **4. Hard Verification & Guards** | Deterministic hooks that always run: `verify-gate` blocks "done" while tests fail; `guard` blocks catastrophic commands (`rm -rf /`, force-push, `git add -A`), pipe-to-shell, and writing secrets to files — *before* they happen | `hooks/{verify-gate,guard}.{ps1,sh}` |
 | **5. The Commands** | Explicit, repeatable workflows: `/plan`, `/ship`, `/debug`, `/refactor`, `/audit`, `/research`, `/optimize`, `/ideate` — each encoding a research-backed method | `skills/{plan,ship,debug,refactor,audit,research,optimize,ideate}/` |
 
 Plus a reference skill of **engineering fundamentals** (`skills/engineering-fundamentals/`) the model consults while planning and reviewing.
@@ -134,6 +134,7 @@ senior-claude/
 │   ├── circuit-breaker.md         # stop-the-line — kills dead-end / no-value work, redirects
 │   └── prompt-coach.md            # retro teacher — how you could've prompted it first try
 ├── hooks/
+│   ├── guard.ps1 / .sh            # PreToolUse safeguard — block catastrophic cmds + secret-writes
 │   ├── session-journal.ps1 / .sh  # auto work-journal at session end
 │   ├── verify-gate.ps1 / .sh      # block "done" until tests pass (opt-in per repo)
 │   └── settings.example.json      # how to wire the hooks
@@ -143,6 +144,7 @@ senior-claude/
     │   ├── skills-vs-subagents-vs-hooks.md
     │   ├── the-brain.md            # persistent memory: vault + semantic index
     │   ├── hooks.md                # how the deterministic gates are wired
+    │   ├── safeguards.md           # defense-in-depth: guards, anti-hallucination, rule enforcement
     │   ├── tools-and-mcps.md
     │   ├── the-method.md           # the research behind the loop (Pólya, Hickey, Ousterhout…)
     │   └── the-full-toolkit.md     # complete linked inventory: agents, skills, MCPs, repos

@@ -21,4 +21,4 @@ Four mechanisms, each for a different job. Picking the wrong one is why setups f
 - `dev-core` → CLAUDE.md-style always-on (the operating loop).
 - `engineering-fundamentals`, `/plan`, `/ship`, `/debug`, `/refactor`, `/audit`, `/research`, `/optimize`, `/ideate`, `brain-capture` → on-demand skills.
 - `senior-review`, `fact-check`, `circuit-breaker`, `prompt-coach` → subagents (the independent passes: adversarial review + evidence verification + stop-the-line on dead-end/no-value work + a retro coach that teaches the human better prompting).
-- `verify-gate`, `session-journal` → hooks (the deterministic test gate + auto-journal).
+- `guard`, `verify-gate`, `session-journal` → hooks (the deterministic layer: a PreToolUse safeguard that blocks catastrophic/rule-breaking calls, the test gate, and the auto-journal). See [`safeguards.md`](safeguards.md).

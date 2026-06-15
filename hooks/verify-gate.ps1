@@ -1,4 +1,4 @@
-# Verify gate — Claude Code **Stop** hook.
+# Verify gate - Claude Code **Stop** hook.
 # Blocks the agent from finishing a turn while a project's verify command
 # (tests/build/lint) is failing. The deterministic backstop behind "done".
 #

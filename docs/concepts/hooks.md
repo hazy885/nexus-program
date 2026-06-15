@@ -2,7 +2,14 @@
 
 Skills and CLAUDE.md are advisory — the model follows them most of the time. Hooks are **guaranteed**: Claude Code runs them on an event, no matter what the model decides. Use them for the few things that must always happen.
 
-Two hooks ship here. Both are **opt-in per project** (safe by default — they do nothing until you turn them on for a repo), never block your shell, and never recurse.
+Three hooks ship here. The `verify-gate` and `session-journal` hooks are **opt-in per project** (safe by default — they do nothing until you turn them on for a repo); the `guard` hook is a global safety net active wherever it's wired into `settings.json`. None block your shell or recurse.
+
+## `guard.ps1` — the safeguard (PreToolUse hook)
+
+Runs *before* every tool call and **blocks** (exit 2) the catastrophic or rule-breaking ones: `rm -rf /`/`~`/`$HOME`, disk formats, fork bombs, `git add -A/.`, `git push --force`, `--no-verify`/`--no-gpg-sign`, `curl … | bash`, and any Write/Edit whose content contains a secret (private key, AWS/Google/Slack/GitHub token, `sk-…` key).
+
+- **Enable:** add the `PreToolUse` block from `settings.example.json` (matcher `Bash|Write|Edit|MultiEdit`).
+- **Fail-open:** any parse error → allow. It's a safety net, not a sandbox — see [`safeguards.md`](safeguards.md) for the full model and how to add your own rules.
 
 ## `verify-gate.ps1` — the test gate (Stop hook)
 
@@ -29,8 +36,8 @@ Run `install.ps1` (Windows) or `install.sh` (macOS/Linux) to copy the skills, ag
 
 Each hook comes in two forms — point `settings.json` at the one for your OS:
 
-- **Windows:** `verify-gate.ps1` · `session-journal.ps1`
-- **macOS / Linux:** `verify-gate.sh` · `session-journal.sh`
+- **Windows:** `guard.ps1` · `verify-gate.ps1` · `session-journal.ps1`
+- **macOS / Linux:** `guard.sh` · `verify-gate.sh` · `session-journal.sh`
 
 The logic is identical (read the hook JSON from stdin, gate on the same `.claude/verify.cmd` / `.claude/journal.enabled` markers, detach the journal run); only the shell differs. The bash journal logs to `$TMPDIR/sc-journal-<id>.log`, the PowerShell one to `%TEMP%\sc-journal-<id>.txt.log`.
 

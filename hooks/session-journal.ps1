@@ -1,4 +1,4 @@
-# Session journal — Claude Code **SessionEnd** hook.
+# Session journal - Claude Code **SessionEnd** hook.
 # At session end, spawns a detached, headless `claude -p` run that reads the
 # session transcript and writes a work-journal note via the brain-capture skill.
 # Makes "capture everything" automatic instead of advisory.
